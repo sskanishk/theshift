@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import MyShifts from './components/MyShifts'
 import NavigationTabs from './components/NavigationTabs'
 import AvailableShift from './components/AvailableShifts'
+import ApiActions from "./actions/ApiActions"
 // import datalocal from "../data.json"
 
-const API_URL = import.meta.env.VITE_BASE_API_URL
 
 function App() {
 
@@ -29,10 +29,8 @@ function App() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await fetch(`${API_URL}/shifts`)
-			const data = await response.json()
-			// const data = datalocal
-			setData(data.sort((a,b) => a.startTime - b.startTime))
+			const response = await ApiActions.getShifts()
+			setData(response.sort((a,b) => a.startTime - b.startTime))
 			setTabState(defaultTabState)
 		}
 		fetchData()

@@ -73,7 +73,7 @@ const Button = ({title, className, isDisabled, onClick}) => {
     return (
         <button 
             className={className} 
-            // disabled={isDisabled} 
+            disabled={isDisabled} 
             onClick={onClick}
         >
             {title}
@@ -81,18 +81,8 @@ const Button = ({title, className, isDisabled, onClick}) => {
     )
 }
 
-const findOverlappedShift = (data,currentShift) => {
-    // let temp = false
-    // data.forEach((shift) => {
-    //     if(shift.id !== currentShift.id) {
-    //         if(shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime) {
-    //             temp = true
-    //         }
-    //     }
-
-	// })
-    // return temp 
-	return data.some((shift) => shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime)
+const findOverlappedShift = (data,shift) => {
+    return !!data.filter(s => s.booked).find(s => s.startTime < shift.endTime && s.endTime > shift.startTime)
 }
 
 
