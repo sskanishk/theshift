@@ -4,53 +4,109 @@
     max-width: 1000px;
     margin: 10px auto;
     padding: 2rem;
-    // text-align: center;
 }
 
 .app__container {
-    // max-width: 1000px;
-    // margin: 30px auto;
-    // padding: 2rem;
-    // text-align: center;
-    -webkit-scroll-behavior:smooth;
-    scroll-behavior: smooth; 
-    transition: all 1s;  
+    -webkit-scroll-behavior: smooth;
+    scroll-behavior: smooth;
+    transition: all 1s;
+
+    .shift__navigation {
+        display: flex;
+        flex-direction: row;
+        padding: 20px;
+
+        h1 {
+            font-size: 24px;
+            margin-right: 20px;
+            color: $gray-blue;
+            cursor: pointer;
+        }
+
+        .tab__active {
+            color: $primary-blue;
+        }
+    }
 
     .app__wrapper {
-        -webkit-box-shadow: 0px 20px 41px -7px rgba(196,196,196,1);
-        -moz-box-shadow: 0px 20px 41px -7px rgba(196,196,196,1);
-        box-shadow: 0px 20px 41px -7px rgba(196,196,196,1);
+        -webkit-box-shadow: 0px 20px 41px -7px $white-smoke;
+        -moz-box-shadow: 0px 20px 41px -7px $white-smoke;
+        box-shadow: 0px 20px 41px -7px $white-smoke;
+
         .app__navigation {
-            // height: 400px;
             .shift__wrapper {
-                // border: 1.5px solid $white-smoke;
-                // border-radius: 5px;
-                // padding: 20px;
-                // background-color: $white-smoke;
+                .shift__area_filter {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-around;
+                    padding: 20px 0px;
+                    font-size: 12px;
+                
+                    h2 {
+                        margin-right: 20px;
+                        color: $gray-blue;
+                        cursor: pointer;
+                    }
+                
+                    .shift__active_area {
+                        color: $primary-blue;
+                    }
+                }
+
+                .shift__group {
+                    .shift__header {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        background-color: $white;
+                        color: $secondary-blue;
+
+                        h3 {
+                            margin-right: 20px;
+                        }
+                    }
+
+                    .shift__data {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .shift__time {
+                            font-size: 16px;
+                            color: $secondary-blue;
+                            font-weight: 500;
+                        }
+
+                        .shift__area {
+                            font-size: 14px;
+                            line-height: initial;
+                            color: $dull-blue;
+                            font-weight: 500;
+                        }
+                    }
+
+                    .shift__row {
+                        padding: 10px 20px;
+                        border-top: 1.5px solid $white-smoke;
+
+                        .shift__booking_status {
+                            display: flex;
+                            justify-content: flex-end;
+                            font-size: 12px;
+                            align-items: center;
+
+                            #overlap {
+                                color: $dark-magenta;
+                            }
+
+                            #booked {
+                                color: $secondary-blue;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
-
-
-
-
-.shift__area_filter {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 20px 0px;
-    font-size: 12px;
-
-    h2 {
-        margin-right: 20px;
-        color: $gray-blue;
-        cursor: pointer;
-    }
-
-    .shift__active_area {
-        color: $primary-blue;
-    }
-}
-
-
