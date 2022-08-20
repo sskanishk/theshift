@@ -8,7 +8,7 @@
     },
     {
         "id": "5348cf1c-43eb-4d31-b2ae-297bafe52951",
-        "booked": false,
+        "booked": true,
         "area": "Helsinki",
         "startTime": 1660969800000,
         "endTime": 1660977000000
@@ -225,7 +225,7 @@
     },
     {
         "id": "7ad1e2a5-17fc-4e4d-ad21-30a608fa779b",
-        "booked": false,
+        "booked": true,
         "area": "Tampere",
         "startTime": 1661333400000,
         "endTime": 1661344200000

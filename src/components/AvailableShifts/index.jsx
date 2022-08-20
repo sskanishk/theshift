@@ -1,6 +1,6 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
-import ShiftGroup from "./ShiftGroup"
+import ShiftsGroup from "./shiftsGroup"
 
 function AvailableShift({data}) {
 
@@ -11,12 +11,39 @@ function AvailableShift({data}) {
 
 
     useEffect(() => {
-		const response = groupByShiftFunc(data)
+		const response = groupByShiftFunc(data.filter((shift) => moment().valueOf() < shift.endTime))
 		const defaultArea = Object.keys(response)[0]
 		setAvaialbleShifts(response)
 		setActiveArea(defaultArea)
 		setShiftsToPass(response[defaultArea])
     }, [])
+
+    const bookshift = (shift) => {
+        let updatedshift = avaialbleShifts[shift.area].shifts.map((i) => {
+            if(i.date === moment(shift.startTime).format('L')) {
+                return {
+                    shifts: i.shifts.map((s) => {
+                        if(s.id === shift.id) {
+                            s.booked = true
+                            return s
+                        }
+                        return s
+                    }),
+                    ...i
+                }
+            }
+            return i
+        })
+        setAvaialbleShifts({
+            ...avaialbleShifts, 
+            [shift.area]: { 
+                shifts: updatedshift, 
+                ...avaialbleShifts[shift.area]
+            } 
+        })
+
+        console.log("alice", findOverlappedShift(data, shift))
+    }
 
 	return (
         <>
@@ -26,21 +53,11 @@ function AvailableShift({data}) {
 				setActiveArea={setActiveArea} 
 				setShiftsToPass={setShiftsToPass}
 			/>
-			{/* {
-				avaialbleShifts
-				? Object.keys(avaialbleShifts).map((area) => {
-					if(avaialbleShifts[area].isActive) {
-						avaialbleShifts[area].shifts.map((shiftGroupByDate) => {
-							return <ShiftGroup item={shiftGroupByDate.shifts} />
-						})
-					}
-				}) : null
-			} */}
 			{
 				shiftsToPass?.shifts
 				? 
-					shiftsToPass.shifts.map((shift) => {
-						return <ShiftGroup item={shift} />
+					shiftsToPass.shifts.map((shift, i) => {
+						return <ShiftsGroup item={shift} bookshift={bookshift} key={`sg${i}`}/>
 					})
 				
 				: null
@@ -58,14 +75,15 @@ const AreaFilter = ({ avaialbleShifts, setShiftsToPass, activeArea, setActiveAre
         <div className="shift__area_filter">
             {
 				avaialbleShifts
-                ? Object.keys(avaialbleShifts).map((area, id) => {
+                ? Object.keys(avaialbleShifts).map((area, i) => {
                     return (
                         <h2 
 							onClick={handleAreaFilter} 
 							title={area}
 							className={area === activeArea ? "shift__active_area" : ""}
+                            key={`af${i}`}
 						>
-							{area}({avaialbleShifts[area].count})
+							{area}&nbsp;({avaialbleShifts[area].count})
 						</h2>
                     )
                 })
@@ -79,6 +97,7 @@ const AreaFilter = ({ avaialbleShifts, setShiftsToPass, activeArea, setActiveAre
 
 
 const groupByShiftFunc = (data) => {
+    // Filter upcoming shifts and skipping passed shifts
 	const groups = data.reduce((groups, shift) => {
 		if(!groups[shift.area]) {
 			groups[shift.area] = {
@@ -87,6 +106,7 @@ const groupByShiftFunc = (data) => {
 				shifts: []
 			}
 		}
+		// groups[shift.area].overlapped = findOverlappedShift(data, shift)
 		groups[shift.area].count = groups[shift.area].count + 1
 		groups[shift.area].shifts.push(shift)
 		return groups
@@ -137,6 +157,16 @@ const groupByDateFunc = (data) => {
 	})
 
 	return groupByDate
+}
+
+const findOverlappedShift = (data,currentShift) => {
+    debugger
+	return data.find((shift) => {
+		if(shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime) {
+			return true
+		}
+		return false
+	})
 }
 
 

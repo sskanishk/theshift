@@ -1,7 +1,6 @@
 import moment from "moment"
-import Button from "./Button"
 
-function ShiftGroup({item}) {
+function ShiftGroup({item, cancelshift}) {
     console.log("Render", item)
     return (
         <div className="shift__group">
@@ -9,14 +8,19 @@ function ShiftGroup({item}) {
             {
                 item && item.shifts ?
                 item.shifts.map((slot, i) => {
-                    // debugger
+                    let liveShift = slot.startTime > moment().valueOf() && moment().valueOf() > slot.endTime
                     return (
                         <div key={`sh${i}`} className="shift__data shift__row">
                             <div>
                                 <SlotTime startTime={slot.startTime} endTime={slot.endTime}/>
                                 <Area areaName={slot.area} />
                             </div>
-                            <Button title="Book" type="book"/>
+                            <Button 
+                                title={slot.booked ? "Cancel" : "Book"} 
+                                className={`${slot.booked ? "cancel" : "book"} ${liveShift ? "disable" : ""}`}
+                                disabled={liveShift}
+                                onClick={() => cancelshift(slot)}
+                            />
                         </div>
                     )
                 })
@@ -63,6 +67,14 @@ const ShiftHeader = ({ date, totalDuration, shiftCount }) => {
             <h5>{totalDuration} hrs</h5>
         </div>
     )
+}
+
+const Button = ({title, className, disable, onClick}) => {
+
+    return (
+        <button className={className} disabled={disable} onClick={onClick}>{title}</button>
+    )
+    
 }
 
 export default ShiftGroup

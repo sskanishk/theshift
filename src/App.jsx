@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import moment from 'moment'
 import MyShift from './components/MyShift'
 import NavigationTabs from './components/NavigationTabs'
-import AvailableShift from './components/AvailableShift'
+import AvailableShift from './components/AvailableShifts'
 
 import datalocal from "../data.json"
 import ShiftContainer from './components/ShiftContainer'
 
-// const API_URL = import.meta.env.VITE_BASE_API_URL
+const API_URL = import.meta.env.VITE_BASE_API_URL
 
 function App() {
 
@@ -16,28 +16,31 @@ function App() {
 			id: "my-shift",
 			title: "My Shift",
 			isActive: true,
-			component: (x) => <MyShift data={x} tag="One" />
+			component: (x) => <MyShift data={x} key="my-shift" />
 		},
 		{
 			id: "avaialble-shift",
 			title: "Avaialble Shift",
 			isActive: false,
-			component: (x) => <AvailableShift data={x} tag="Two" />
+			component: (x) => <AvailableShift data={x} key="avaialble-shift" />
 		}		
 	]
 
+	// console.log("org", datalocal)
+	// console.log("sort ", datalocal.sort((a,b) => a.startTime - b.startTime))
 	const [data, setData] = useState(datalocal)
+	// const [data, setData] = useState(datalocal.sort((a,b) => a.startTime - b.endTime))
 	const [groupData, setGroupData] = useState(null)
 	const [areaList, setAreaList] = useState(null)
 	const [ tabState, setTabState ] = useState(defaultTabState)
 
 
 	useEffect(() => {
-		const fetchData = () => {
+		const fetchData = async () => {
 			// const response = await fetch(`${API_URL}/shifts`)
 			// const data = await response.json()
 			const data = datalocal
-			setData(data)
+			setData(data.sort((a,b) => a.startTime - b.startTime))
 			// setAreaList(getDistinctArea(data))
 			// setGroupData(groupShiftData(data).groupByShift)
 			// setAreaList(groupShiftData(data).groupByArea)

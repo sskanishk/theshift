@@ -7,16 +7,37 @@ function MyShift({data}) {
     const [myShifts, setMyShifts] = useState(null)
 
     useEffect(() => {
-        const temp = groupByDateFunc(data)
+        const temp = groupByDateFunc(data.filter((dt) => dt.booked))
 		setMyShifts(temp)
     },[])
+
+	const cancelshift = (shift) => {
+		debugger
+		let updatedMyShift = myShifts.map((i) => {
+            if(i.date === moment(shift.startTime).format('L')) {
+                return {
+                    shifts: i.shifts.map((s) => {
+                        if(s.id === shift.id) {
+                            s.booked = false
+                            return s
+                        }
+                        return s
+                    }),
+                    ...i
+                }
+            }
+            return i
+        })
+		debugger
+		setMyShifts(updatedMyShift)
+	}
 
     return (
         <>
         {
             myShifts
             ? myShifts.map((obj) => {
-                return <ShiftGroup item={obj} />
+                return <ShiftGroup item={obj} cancelshift={cancelshift} />
             })
             : null
         }
