@@ -1,8 +1,9 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
-import ShiftGroup from "./ShiftGroup"
+import NoResultFound from "./NoResultFound"
+import ShiftGroup from "./MyShifts/ShiftGroup"
 
-function MyShift({data}) {
+function MyShifts({data}) {
 
     const [myShifts, setMyShifts] = useState(null)
 
@@ -12,7 +13,7 @@ function MyShift({data}) {
     },[])
 
 	const cancelshift = (shift) => {
-		debugger
+		// debugger
 		let updatedMyShift = myShifts.map((i) => {
             if(i.date === moment(shift.startTime).format('L')) {
                 return {
@@ -28,18 +29,18 @@ function MyShift({data}) {
             }
             return i
         })
-		debugger
+		// debugger
 		setMyShifts(updatedMyShift)
 	}
 
     return (
         <>
         {
-            myShifts
+            myShifts && myShifts.length > 0
             ? myShifts.map((obj) => {
                 return <ShiftGroup item={obj} cancelshift={cancelshift} />
             })
-            : null
+            : <NoResultFound />
         }
         </>
     )
@@ -72,4 +73,4 @@ const groupByDateFunc = (data) => {
 	return groupByDate
 }
 
-export default MyShift
+export default MyShifts

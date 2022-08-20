@@ -1,7 +1,6 @@
 import moment from "moment"
 
 function ShiftGroup({item, cancelshift}) {
-    console.log("Render", item)
     return (
         <div className="shift__group">
             <ShiftHeader date={item.date} totalDuration={item.totalDuration} shiftCount={item?.shifts?.length} />

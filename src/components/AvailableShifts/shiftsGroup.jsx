@@ -3,11 +3,6 @@ import { useEffect } from "react"
 // import Button from "../Button"
 
 function ShiftsGroup({item, bookshift}) {
-
-    useEffect(() => {
-        console.log('Item', item)
-    }, [])
-
     return (
         <div className="shift__group">
             <ShiftHeader date={item.date} />
@@ -87,21 +82,17 @@ const Button = ({title, className, isDisabled, onClick}) => {
 }
 
 const findOverlappedShift = (data,currentShift) => {
-    console.log("date", moment(currentShift.startTime).format("DD MM YY"))
-    let x = false
-    let temp = !!data.find((shift) => {
-        if(shift.id !== currentShift.id) {
-            debugger
-            if(shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime) {
-                x = true
-            }
-        }
+    // let temp = false
+    // data.forEach((shift) => {
+    //     if(shift.id !== currentShift.id) {
+    //         if(shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime) {
+    //             temp = true
+    //         }
+    //     }
 
-	})
-    let temp2 = data.some((shift) => shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime)
-    console.log(temp2)
-    console.log("--------------------------------")
-	return temp2
+	// })
+    // return temp 
+	return data.some((shift) => shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime)
 }
 
 

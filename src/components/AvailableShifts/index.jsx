@@ -41,8 +41,6 @@ function AvailableShift({data}) {
                 ...avaialbleShifts[shift.area]
             } 
         })
-
-        console.log("alice", findOverlappedShift(data, shift))
     }
 
 	return (
@@ -160,7 +158,7 @@ const groupByDateFunc = (data) => {
 }
 
 const findOverlappedShift = (data,currentShift) => {
-    debugger
+    // debugger
 	return data.find((shift) => {
 		if(shift.endTime > currentShift.startTime && shift.startTime < currentShift.endTime) {
 			return true

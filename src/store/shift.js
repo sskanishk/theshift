@@ -12,7 +12,7 @@ const useStore = create((set, get) => ({
         ],
 
         setTabs: (newTabState) => {
-            console.log("tabsbatte", newTabState)
+            // console.log("tabsbatte", newTabState)
             set((state) => ({
                 navigation: {
                     ...state.navigation,
