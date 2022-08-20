@@ -1,0 +1,54 @@
+@import './colors.scss';
+
+#root {
+    max-width: 1000px;
+    margin: 10px auto;
+    padding: 2rem;
+    // text-align: center;
+}
+
+.app__container {
+    // max-width: 1000px;
+    // margin: 30px auto;
+    // padding: 2rem;
+    // text-align: center;
+    -webkit-scroll-behavior:smooth;
+    scroll-behavior: smooth; 
+    transition: all 1s;  
+
+    .app__wrapper {
+
+        .app__navigation {
+
+            .shift__wrapper {
+                border: 1px solid $gray-blue;
+                border-radius: 5px;
+                // padding: 20px;
+                // background-color: $white-smoke;
+            }
+        }
+    }
+}
+
+
+
+
+.shift__area_filter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 20px 0px;
+    font-size: 12px;
+
+    h2 {
+        margin-right: 20px;
+        color: $gray-blue;
+        cursor: pointer;
+    }
+
+    .shift__active_area {
+        color: $secondary-blue;
+    }
+}
+
+

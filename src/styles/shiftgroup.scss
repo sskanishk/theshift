@@ -1,0 +1,49 @@
+@import './colors.scss';
+
+.shift__group {
+
+    // padding: 0px 20px;
+
+
+
+    .shift__header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        background-color: $white;
+        color: $secondary-blue;
+        
+        h3 {
+            margin-right: 20px;
+        }
+    }
+
+    .shift__data {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .shift__time {
+            font-size: 16px;
+            color: $secondary-blue;
+            font-weight: 500;
+        }
+
+        .shift__area {
+            font-size: 14px;
+            line-height: initial;
+            color: $dull-blue;
+            font-weight: 500;
+        }
+    }
+
+    .shift__row {
+        padding: 10px 20px;
+        border-top: 1px solid $gray-blue;
+    }
+
+}
+
+
+

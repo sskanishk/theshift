@@ -1,0 +1,15 @@
+.shift__navigation {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    h1 {
+        font-size: 24px;
+        margin-right: 20px;
+        color: $gray-blue;
+        cursor: pointer;
+    }
+
+    .tab__active {
+        color: $secondary-blue;    
+    }
+}

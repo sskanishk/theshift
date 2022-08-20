@@ -1,83 +1,112 @@
 import { useEffect, useState } from 'react'
-import './App.css'
-import ShiftRow from './components/ShiftRow'
+import moment from 'moment'
+import MyShift from './components/MyShift'
+import NavigationTabs from './components/NavigationTabs'
+import AvailableShift from './components/AvailableShift'
 
-const API_URL = import.meta.env.VITE_BASE_API_URL
+import datalocal from "../data.json"
+import ShiftContainer from './components/ShiftContainer'
+
+// const API_URL = import.meta.env.VITE_BASE_API_URL
 
 function App() {
 
-	const [data, setData] = useState(null)
+	const defaultTabState = [
+		{
+			id: "my-shift",
+			title: "My Shift",
+			isActive: true,
+			component: (x) => <MyShift data={x} tag="One" />
+		},
+		{
+			id: "avaialble-shift",
+			title: "Avaialble Shift",
+			isActive: false,
+			component: (x) => <AvailableShift data={x} tag="Two" />
+		}		
+	]
+
+	const [data, setData] = useState(datalocal)
 	const [groupData, setGroupData] = useState(null)
-	const [area, setArea] = useState(null)
+	const [areaList, setAreaList] = useState(null)
+	const [ tabState, setTabState ] = useState(defaultTabState)
+
 
 	useEffect(() => {
-		const fetchData = async () => {
-			const response = await fetch(`${API_URL}/shifts`)
-			const data = await response.json()
+		const fetchData = () => {
+			// const response = await fetch(`${API_URL}/shifts`)
+			// const data = await response.json()
+			const data = datalocal
 			setData(data)
-			getDistinctArea(data)
-			groupByDate(data)
-		}
-		const groupByDate = (data) => {
-			const groups = data.reduce((groups, slot) => {
-				const date = new Date(slot.startTime).toLocaleDateString()
-				if (!groups[date]) {
-					groups[date] = []
-				}
-				groups[date].push(slot)
-				return groups
-			}, {})
-
-			const groupArrays = Object.keys(groups).map((date) => {
-				return {
-					date,
-					slots: groups[date]
-				}
-			})
-			setGroupData(groupArrays)
-			console.log("groupArrays ", groupArrays)
-		}
-		const getDistinctArea = (data) => {
-			let area = data.map((slot) => slot.area)
-			area = new Set(area)
-			setArea(area)
+			// setAreaList(getDistinctArea(data))
+			// setGroupData(groupShiftData(data).groupByShift)
+			// setAreaList(groupShiftData(data).groupByArea)
 		}
 		fetchData()
 	}, [])
 
-	console.log(`${API_URL}/shifts`)
 	return (
-		<div className="App">
-			{
-				groupData
-				? groupData.map((item, i) => {
-					return (
-						<div key={`item${i}`}>
-							<ShiftRow item={item} />
-						</div>
-					)
-				})
-				: <h3>No group data</h3>
-			}
-			{
-				data
-				? data.map((item, i) => {
-					return (
-						<div key={i}>
-							{new Date(item.startTime).toLocaleDateString()}
-							{"  ---  "}
-							{new Date(item.endTime).toLocaleDateString()}
-							{"  ---  "}
-							{i+1}
-							{"  ---  "}
-							{item.endTime}
-						</div>
-					)
-				})
-				: <h2>nothing</h2>
-			}
+		<div className="app__container">
+			<NavigationTabs tabState={tabState} setTabState={setTabState} />
+			<div className="app__wrapper">
+				<div className="app__navigation">
+					<div className="shift__wrapper">
+
+					{
+						tabState.map((i) => {
+							if(i.isActive) {
+								return i.component(data)
+							}
+						})
+					}
+
+					</div>
+				</div>
+			</div>
 		</div>
 	)
+}
+
+
+const groupShiftData = (data) => {
+	const groupByArea = []
+	const groups = data.reduce((groups, slot) => {
+		const date = moment(slot.startTime).format('L')
+		if (!groups[date]) {
+			groups[date] = {
+				shifts: [],
+				totalDuration: 0
+			}
+		}
+		slot.duration = Math.abs(slot.startTime - slot.endTime) / 36e5
+		groups[date].totalDuration = slot.duration + groups[date].totalDuration
+		groups[date].shifts.push(slot)
+		
+		if(!groupByArea[slot.area]) {
+			groupByArea[slot.area] = {
+				area: slot.area,
+				count: 0
+			}
+		}
+		groupByArea[slot.area].count = groupByArea[slot.area].count + 1
+		return groups
+	}, {})
+	console.log("groupByArea ", groupByArea)
+	const groupByShift = Object.keys(groups).map((date) => {
+		return {
+			date,
+			totalDuration: groups[date].totalDuration,
+			shifts: groups[date].shifts
+		}
+	})
+	return { groupByShift, groupByArea }
+}
+
+const getDistinctArea = (data) => {
+	let area = data.map((slot) => slot.area)
+	area = new Set(area)
+	// setAreaList([...area])
+	return [...area]
 }
 
 export default App

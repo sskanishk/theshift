@@ -1,0 +1,25 @@
+@import './colors.scss';
+
+button {
+    width: 100px;
+    height: 35px;
+    margin: 0px 12px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    // position: relative;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.book {
+    border: 1.5px solid $light-green;
+    color: $dark-green;
+}
+
+.cancel {
+    border: 1.5px solid $light-magenta;
+    color: $dark-magenta;
+}
