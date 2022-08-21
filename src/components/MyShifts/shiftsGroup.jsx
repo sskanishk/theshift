@@ -1,6 +1,13 @@
 import moment from "moment"
+import useStore from '../../store/shift'
 
-function ShiftGroup({item, cancelshift}) {
+
+function ShiftsGroup({item}) {
+
+    const shiftStore = useStore((state) => state.shift)
+    const { cancelShift } = shiftStore
+
+
     return (
         <div className="shift__group">
             <ShiftHeader date={item.date} totalDuration={item.totalDuration} shiftCount={item?.shifts?.length} />
@@ -18,7 +25,7 @@ function ShiftGroup({item, cancelshift}) {
                                 title={slot.booked ? "Cancel" : "Book"} 
                                 className={`${slot.booked ? "cancel" : "book"} ${liveShift ? "disable" : ""}`}
                                 disabled={liveShift}
-                                onClick={() => cancelshift(slot)}
+                                onClick={() => cancelShift(slot)}
                             />
                         </div>
                     )
@@ -76,4 +83,4 @@ const Button = ({title, className, disable, onClick}) => {
     
 }
 
-export default ShiftGroup
+export default ShiftsGroup

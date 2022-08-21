@@ -1,6 +1,12 @@
 import moment from "moment"
+import useStore from '../../store/shift'
 
-function ShiftsGroup({item, shiftAction }) {
+
+function ShiftsGroup({item}) {
+
+    const shiftStore = useStore((state) => state.shift)
+    const { updateShift } = shiftStore
+
     return (
         <div className="shift__group">
             <ShiftHeader date={item.date} />
@@ -26,7 +32,7 @@ function ShiftsGroup({item, shiftAction }) {
                                     title={slot.booked ? "Cancel" : "Book"}
                                     className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
                                     isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
-                                    onClick={() => shiftAction(slot, slot.booked ? "cancel" : "book")}
+                                    onClick={() => updateShift(slot, slot.booked ? "cancel" : "book")}
                                 />
                             </div>
                         </div>

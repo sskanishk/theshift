@@ -1,6 +1,5 @@
 import moment from "moment"
 
-
 // Groupby date, data for MyShift 
 export const groupByDateMyshifts = (data) => {
 	const groups = data.reduce((groups, shift) => {
@@ -100,7 +99,29 @@ export const liveShifts = (data) => {
     return data.filter((shift) => moment().valueOf() < shift.endTime)
 }
 
+
 // Filter only booked shifts
 export const bookedShifts = (data) => {
     return data.filter((dt) => dt.booked)
 }
+
+
+// Update shifts
+export const updateBookStatus = (data, shift, newStatus) => {
+	let newShiftData = data.map((foo) => {
+		if(foo.date === moment(shift.startTime).format('L')) {
+			return {
+				shifts: foo.shifts.map((bar) => {
+					if(bar.id === shift.id) {
+						bar.booked = newStatus
+						return bar
+					}
+					return bar
+				}),
+				...foo
+			}
+		}
+		return foo
+	})
+	return newShiftData
+} 

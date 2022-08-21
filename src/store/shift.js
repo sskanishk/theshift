@@ -1,7 +1,15 @@
 import create from 'zustand'
 import ApiActions from '../actions/ApiActions'
+import { devtools } from 'zustand/middleware'
 
-import { groupByDateMyshifts, groupByAreaAvailableShifts, liveShifts, bookedShifts } from './services'
+
+import { 
+    groupByDateMyshifts, 
+    groupByAreaAvailableShifts, 
+    liveShifts, 
+    bookedShifts,
+    updateBookStatus
+} from './services'
 
 
 const initialState = {
@@ -18,6 +26,8 @@ const useStore = create((set, get) => ({
         loading: initialState.loading,
         error: initialState.error,
         availableShifts: {},
+        activeArea: "",
+        activeAreaData: [],
         myShifts: [],
 
         setShifts: (newShiftData) => {
@@ -56,7 +66,7 @@ const useStore = create((set, get) => ({
             }
         },
 
-        getAvailableShiftsData: () => {
+        fetchAvailableShiftsData: () => {
             // get Shift Data from store
             const shiftData = get().shift.shiftData
 
@@ -66,14 +76,35 @@ const useStore = create((set, get) => ({
             // modify data for available shifts
             const availableShifts = groupByAreaAvailableShifts(liveShiftData)
 
-            debugger
+            const defaultArea = Object.keys(availableShifts)[0]
+
             // set available shift data
             set((state) => ({
-                shift: {...state.shift, availableShifts: availableShifts}
+                shift: {
+                    ...state.shift,
+                    availableShifts: availableShifts,
+                    activeArea: defaultArea,
+                    activeAreaData: availableShifts[defaultArea]
+                }
             }))
+        },
 
-            debugger
-            console.log(get().shift.availableShifts)
+        setActiveArea: (newArea) => {
+            set((state) => ({
+                shift: {
+                    ...state.shift,
+                    activeArea: newArea,
+                }
+            }))
+        },
+
+        setActiveAreaData: (newActiveAreaData) => {
+            set((state) => ({
+                shift: {
+                    ...state.shift,
+                    activeAreaData: newActiveAreaData,
+                }
+            }))
         },
 
         getMyShiftData: () => {
@@ -92,8 +123,45 @@ const useStore = create((set, get) => ({
             }))
         },
 
-    }
+        updateShift: (shiftToBeUpdate, type) => {
+            
+            // get availableShifts data
+            const availableShiftsData = get().shift.availableShifts
 
+            let bookStatus
+            if(type === "cancel") { bookStatus = false }
+            if(type === "book") { bookStatus = true }
+
+            let data = availableShiftsData[shiftToBeUpdate.area].shifts
+            let updatedshift = updateBookStatus(data, shiftToBeUpdate, bookStatus)
+
+            set((state) => ({
+                shift: {
+                    ...state.shift,
+                    availableShifts: {
+                        ...state.shift.availableShifts, 
+                        [shiftToBeUpdate.area]: { 
+                            shifts: updatedshift, 
+                            ...state.shift.availableShifts[shiftToBeUpdate.area]
+                        } 
+                    }
+                }
+            }))
+        },
+
+        cancelShift: (shiftToBeCancel) => {
+            // get my-shift data
+            const myShiftData = get().shift.myShifts
+
+            let updatedshift = updateBookStatus(myShiftData, shiftToBeCancel, false)
+
+            // set available shift data
+            set((state) => ({
+                shift: {...state.shift, myShifts: updatedshift}
+            }))
+
+        }
+    }
 }))
 
 export default useStore
