@@ -1,16 +1,16 @@
 import { useEffect } from "react"
 import NoResultFound from "../NoResultFound"
 import ShiftsGroup from "./shiftsGroup"
-import useStore from '../../store/shift'
+import useStore from '../../store'
 
 
 function MyShifts() {
 
     const shiftStore = useStore(state => state.shift)
-    const { myShifts, getMyShiftData } = shiftStore
+    const { myShifts, fetchMyShiftData } = shiftStore
 
     useEffect(() => {
-        getMyShiftData()
+        fetchMyShiftData()
     },[])
 
     return (

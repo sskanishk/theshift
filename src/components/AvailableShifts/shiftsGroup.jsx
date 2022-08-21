@@ -1,11 +1,23 @@
 import moment from "moment"
-import useStore from '../../store/shift'
+import useStore from '../../store'
 import ButtonTitle from "../common/ButtonTitle"
+import toast, { Toaster } from 'react-hot-toast'
 
 function ShiftsGroup({item}) {
 
     const shiftStore = useStore((state) => state.shift)
-    const { updateShift, loadingId } = shiftStore
+    const { updateShift, loadingId, error } = shiftStore
+
+    const handleOnClick = async (slot) => {
+        const resp = await updateShift(slot, slot.booked ? "cancel" : "book")
+        if(resp.hasOwnProperty("error")) {
+            toast.error(`⁉️ ${resp.message}`)
+        } else if(resp.booked) {
+            toast.success(`Shift has been booked`)
+        } else {
+            toast.success(`Shift has been canceled`)
+        }
+    }
 
     return (
         <div className="shift__group">
@@ -13,7 +25,6 @@ function ShiftsGroup({item}) {
             {
                 item && item.shifts ?
                 item.shifts.map((slot, i) => {
-                    // debugger
                     return (
                         <div key={`sh${i}`} className="shift__data shift__row">
                             <SlotTime startTime={slot.startTime} endTime={slot.endTime}/>
@@ -33,7 +44,11 @@ function ShiftsGroup({item}) {
                                     slot={slot}
                                     className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
                                     isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
-                                    onClick={() => updateShift(slot, slot.booked ? "cancel" : "book")}
+                                    onClick={() => handleOnClick(slot)}
+                                />
+                                <Toaster 
+                                    position="bottom-center"
+                                    reverseOrder={false}
                                 />
                             </div>
                         </div>

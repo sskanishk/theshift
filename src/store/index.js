@@ -41,7 +41,7 @@ const useStore = create((set, get) => ({
             
             // start loading
             set((state) => ({
-                shift: {...state.shift, loading: true}
+                shift: {...state.shift}
             }))
 
             try {
@@ -49,19 +49,20 @@ const useStore = create((set, get) => ({
                 // getting response
                 let response = await ApiActions.getShifts()
 
+                // debugger
                 // sorting response
                 response = response.sort((a,b) => a.startTime - b.startTime)
 
                 // set response
                 set((state) => ({
-                    shift: {...state.shift, shiftData: response, error: "", loading: false}
+                    shift: {...state.shift, shiftData: response}
                 }))
 
             } catch (error) {
                 
                 // set error if catch
                 set((state) => ({
-                    shift: {...state.shift, error: error.message, loading: false}
+                    shift: {...state.shift, error: error.message}
                 }))
 
             }
@@ -70,7 +71,7 @@ const useStore = create((set, get) => ({
         fetchAvailableShiftsData: () => {
             // get Shift Data from store
             const shiftData = get().shift.shiftData
-
+            // debugger
             // get ongoing or live shifts data
             const liveShiftData = liveShifts(shiftData)
     
@@ -108,7 +109,10 @@ const useStore = create((set, get) => ({
             }))
         },
 
-        getMyShiftData: () => {
+        fetchMyShiftData: async () => {
+
+            await get().shift.fetchShifts()
+
             // get Shift Data from store
             const shiftData = get().shift.shiftData
 
@@ -124,75 +128,96 @@ const useStore = create((set, get) => ({
             }))
         },
 
-        updateShift: (shiftToBeUpdate, type) => {
+        updateShift: async (shiftToBeUpdate, type) => {
 
             // start loading
             set((state) => ({
                 shift: {...state.shift, loading: true, loadingId: shiftToBeUpdate.id}
             }))
 
-            setTimeout(() => {
-                // get availableShifts data
-                const availableShiftsData = get().shift.availableShifts
+            let resp
+            if(type === "cancel") { 
+                resp = await ApiActions.cancelShift(shiftToBeUpdate.id)
+            }
+            if(type === "book") { 
+                resp = await ApiActions.bookShift(shiftToBeUpdate.id)
+            }
 
-                let bookStatus
-                if(type === "cancel") { bookStatus = false }
-                if(type === "book") { bookStatus = true }
+            // getting response
+            let response = await ApiActions.getShifts()
 
-                let data = availableShiftsData[shiftToBeUpdate.area].shifts
-                let updatedshift = updateBookStatus(data, shiftToBeUpdate, bookStatus)
+            // sorting response
+            response = response.sort((a,b) => a.startTime - b.startTime)
 
-                set((state) => ({
-                    shift: {
-                        ...state.shift,
-                        loading: false,
-                        loadingId: "",
-                        availableShifts: {
-                            ...state.shift.availableShifts, 
-                            [shiftToBeUpdate.area]: { 
-                                shifts: updatedshift, 
-                                ...state.shift.availableShifts[shiftToBeUpdate.area]
-                            } 
-                        }
-                    }
-                }))
-            }, 500)
-            
+            // get ongoing or live shifts data
+            const liveShiftData = liveShifts(response)
+                
+            // modify data for available shifts
+            const availableShifts = groupByAreaAvailableShifts(liveShiftData)
 
+            // get only booked shifts
+            const bookedShiftsData = bookedShifts(response)
+
+            // modify data for my-shifts
+            const myShifts = groupByDateMyshifts(bookedShiftsData)
+
+            // set available shift data
+            set((state) => ({
+                shift: {
+                    ...state.shift,
+                    loading: false,
+                    loadingId: "",
+                    shiftData: response,
+                    availableShifts: availableShifts,
+                    activeAreaData: availableShifts[shiftToBeUpdate.area],
+                    myShifts: myShifts
+                }
+            }))
+
+            return resp
         },
 
-        cancelShift: (shiftToBeCancel) => {
+        cancelShift: async (shiftToBeCancel) => {
+            
             // start loading
             set((state) => ({
                 shift: {...state.shift, loading: true, loadingId: shiftToBeCancel.id}
             }))
 
-            setTimeout(() => {
-                // get my-shift data
-                const shiftData = get().shift.shiftData
+            let resp = await ApiActions.cancelShift(shiftToBeCancel.id)
 
-                // getMyShiftData
-                let updatedshift = shiftData.map((shift) => {
-                    if(shift.id === shiftToBeCancel.id) {
-                        shift.booked = false
-                    }
-                    return shift
-                })
+            // getting response
+            let response = await ApiActions.getShifts()
 
-                // update all shift data
-                set((state) => ({
-                    shift: {
-                        ...state.shift, 
-                        loadingId:"",
-                        loading:false, 
-                        shiftData: updatedshift, 
-                    }
-                }))
+            // sorting response
+            response = response.sort((a,b) => a.startTime - b.startTime)
 
-                // modify fresh data compatible with my-shift data
-                get().shift.getMyShiftData()
+            // get only booked shifts
+            const bookedShiftsData = bookedShifts(response)
 
-            }, 500)
+            // modify data for my-shifts
+            const myShifts = groupByDateMyshifts(bookedShiftsData)
+
+            // get ongoing or live shifts data
+            const liveShiftData = liveShifts(response)
+                
+            // modify data for available shifts
+            const availableShifts = groupByAreaAvailableShifts(liveShiftData)
+
+            // set available shift data
+            set((state) => ({
+                shift: {
+                    ...state.shift,
+                    loading: false,
+                    loadingId: "",
+                    shiftData: response,
+                    myShifts: myShifts,
+                    availableShifts: availableShifts,
+                    activeAreaData: availableShifts[shiftToBeCancel.area],
+                }
+            }))
+
+            return resp
         }
     }
 }))

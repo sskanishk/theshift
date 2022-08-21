@@ -1,6 +1,7 @@
 import moment from "moment"
-import useStore from '../../store/shift'
+import useStore from '../../store'
 import ButtonTitle from "../common/ButtonTitle"
+import toast, { Toaster } from 'react-hot-toast'
 
 
 function ShiftsGroup({item}) {
@@ -8,6 +9,16 @@ function ShiftsGroup({item}) {
     const shiftStore = useStore((state) => state.shift)
     const { cancelShift, loadingId } = shiftStore
 
+    const handleOnClick = async (slot) => {
+        const resp = await cancelShift(slot)
+        if(resp.hasOwnProperty("error")) {
+            toast.error(`${resp.message}`)
+        } else if(resp.booked) {
+            toast.success(`Shift has been booked`)
+        } else {
+            toast.success(`Shift has been canceled`)
+        }
+    }
 
     return (
         <div className="shift__group">
@@ -27,7 +38,11 @@ function ShiftsGroup({item}) {
                                 disable={liveShift}
                                 slot={slot}
                                 loadingId={loadingId}
-                                onClick={() => cancelShift(slot)}
+                                onClick={() => handleOnClick(slot)}
+                            />
+                            <Toaster 
+                                position="bottom-center"
+                                reverseOrder={false}
                             />
                         </div>
                     )

@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import ShiftsGroup from "./shiftsGroup"
-import useStore from '../../store/shift'
+import useStore from '../../store'
 import shallow from 'zustand/shallow'
 
 function AvailableShift() {

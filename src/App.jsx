@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import MyShifts from './components/MyShifts'
 import NavigationTabs from './components/NavigationTabs'
 import AvailableShift from './components/AvailableShifts'
-import useStore from './store/shift'
+import useStore from './store'
 // import datalocal from "../data.json"
 
 
