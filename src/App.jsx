@@ -20,10 +20,10 @@ function App() {
 			title: "Avaialble Shift",
 			isActive: false,
 			component: (dt) => <AvailableShift data={dt} key="avaialble-shift" />
-		}		
+		}
 	]
 
-	const [ tabState, setTabState ] = useState(null)
+	const [tabState, setTabState] = useState(null)
 
 	const shiftStore = useStore()
 	const { shiftData, fetchShifts } = shiftStore.shift
@@ -35,17 +35,17 @@ function App() {
 
 	return (
 		<div className="app__container">
-			{ tabState && <NavigationTabs tabState={tabState} setTabState={setTabState} /> }
+			{tabState && <NavigationTabs tabState={tabState} setTabState={setTabState} />}
 			<div className="app__wrapper">
 				<div className="app__navigation">
 					<div className="shift__wrapper">
-					{
-						tabState && tabState.map((i) => {
-							if(i.isActive) {
-								return i.component(shiftData)
-							}
-						})
-					}
+						{
+							tabState && tabState.map((i) => {
+								if (i.isActive) {
+									return i.component(shiftData)
+								}
+							})
+						}
 					</div>
 				</div>
 			</div>

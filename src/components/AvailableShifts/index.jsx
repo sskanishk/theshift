@@ -5,37 +5,37 @@ import shallow from 'zustand/shallow'
 
 function AvailableShift() {
 
-	const shiftStore = useStore((state) => state.shift,shallow)
+	const shiftStore = useStore((state) => state.shift, shallow)
 
-    const { 
-		availableShifts, fetchAvailableShiftsData, 
+	const {
+		availableShifts, fetchAvailableShiftsData,
 		activeArea, setActiveArea,
-		activeAreaData, setActiveAreaData 
+		activeAreaData, setActiveAreaData
 	} = shiftStore
 
-    useEffect(() => {
+	useEffect(() => {
 		fetchAvailableShiftsData()
-    }, [])
+	}, [])
 
 	return (
-        <>
-            <AreaFilter 
-				availableShifts={availableShifts} 
-				activeArea={activeArea} 
-				setActiveArea={setActiveArea} 
+		<>
+			<AreaFilter
+				availableShifts={availableShifts}
+				activeArea={activeArea}
+				setActiveArea={setActiveArea}
 				setActiveAreaData={setActiveAreaData}
 			/>
 			{
 				activeAreaData?.shifts
-				? 
+					?
 					activeAreaData.shifts.map((shift, i) => {
-						return <ShiftsGroup item={shift} key={`sg${i}`}/>
+						return <ShiftsGroup item={shift} key={`sg${i}`} />
 					})
-				
-				: null
+
+					: null
 			}
-        </>
-    )
+		</>
+	)
 }
 
 const AreaFilter = ({ availableShifts, setActiveAreaData, activeArea, setActiveArea }) => {
@@ -43,26 +43,26 @@ const AreaFilter = ({ availableShifts, setActiveAreaData, activeArea, setActiveA
 		setActiveArea(e.target.title)
 		setActiveAreaData(availableShifts[e.target.title])
 	}
-    return (
-        <div className="shift__area_filter">
-            {
+	return (
+		<div className="shift__area_filter">
+			{
 				availableShifts
-                ? Object.keys(availableShifts).map((area, i) => {
-                    return (
-                        <h2 
-							onClick={handleAreaFilter} 
-							title={area}
-							className={area === activeArea ? "shift__active_area" : ""}
-                            key={`af${i}`}
-						>
-							{area}&nbsp;({availableShifts[area].count})
-						</h2>
-                    )
-                })
-				: <h2>Something is missing</h2>
-            }
-        </div>
-    )
+					? Object.keys(availableShifts).map((area, i) => {
+						return (
+							<h2
+								onClick={handleAreaFilter}
+								title={area}
+								className={area === activeArea ? "shift__active_area" : ""}
+								key={`af${i}`}
+							>
+								{area}&nbsp;({availableShifts[area].count})
+							</h2>
+						)
+					})
+					: <h2>Something is missing</h2>
+			}
+		</div>
+	)
 }
 
 export default AvailableShift

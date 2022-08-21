@@ -11,17 +11,17 @@ function MyShifts() {
 
     useEffect(() => {
         fetchMyShiftData()
-    },[])
+    }, [])
 
     return (
         <>
-        {
-            myShifts && myShifts.length > 0
-            ? myShifts.map((obj, i) => {
-                return <ShiftsGroup item={obj} key={`$shift${i}`}/>
-            })
-            : <NoResultFound />
-        }
+            {
+                myShifts && myShifts.length > 0
+                    ? myShifts.map((obj, i) => {
+                        return <ShiftsGroup item={obj} key={`$shift${i}`} />
+                    })
+                    : <NoResultFound />
+            }
         </>
     )
 }

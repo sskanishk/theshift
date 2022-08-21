@@ -8,7 +8,6 @@ import {
     groupByAreaAvailableShifts, 
     liveShifts, 
     bookedShifts,
-    updateBookStatus
 } from './services'
 
 

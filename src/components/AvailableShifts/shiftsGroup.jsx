@@ -3,16 +3,16 @@ import useStore from '../../store'
 import ButtonTitle from "../common/ButtonTitle"
 import toast, { Toaster } from 'react-hot-toast'
 
-function ShiftsGroup({item}) {
+function ShiftsGroup({ item }) {
 
     const shiftStore = useStore((state) => state.shift)
-    const { updateShift, loadingId, error } = shiftStore
+    const { updateShift, loadingId } = shiftStore
 
     const handleOnClick = async (slot) => {
         const resp = await updateShift(slot, slot.booked ? "cancel" : "book")
-        if(resp.hasOwnProperty("error")) {
+        if (resp.hasOwnProperty("error")) {
             toast.error(`⁉️ ${resp.message}`)
-        } else if(resp.booked) {
+        } else if (resp.booked) {
             toast.success(`Shift has been booked`)
         } else {
             toast.success(`Shift has been canceled`)
@@ -24,41 +24,41 @@ function ShiftsGroup({item}) {
             <ShiftHeader date={item.date} />
             {
                 item && item.shifts ?
-                item.shifts.map((slot, i) => {
-                    return (
-                        <div key={`sh${i}`} className="shift__data shift__row">
-                            <SlotTime startTime={slot.startTime} endTime={slot.endTime}/>
-                            <div className="shift__booking_status">
+                    item.shifts.map((slot, i) => {
+                        return (
+                            <div key={`sh${i}`} className="shift__data shift__row">
+                                <SlotTime startTime={slot.startTime} endTime={slot.endTime} />
+                                <div className="shift__booking_status">
                                     {
-                                        !slot.booked && findOverlappedShift(item.shifts, slot) 
-                                        ? <h3 id="overlap">Overlapping</h3> 
-                                        : ""
+                                        !slot.booked && findOverlappedShift(item.shifts, slot)
+                                            ? <h3 id="overlap">Overlapping</h3>
+                                            : ""
                                     }
                                     {
                                         slot.booked
-                                        ? <h3 id="booked">Booked</h3> 
-                                        : ""
+                                            ? <h3 id="booked">Booked</h3>
+                                            : ""
                                     }
-                                <Button 
-                                    loadingId={loadingId}
-                                    slot={slot}
-                                    className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
-                                    isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
-                                    onClick={() => handleOnClick(slot)}
-                                />
-                                <Toaster 
-                                    position="bottom-center"
-                                    reverseOrder={false}
-                                />
+                                    <Button
+                                        loadingId={loadingId}
+                                        slot={slot}
+                                        className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
+                                        isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
+                                        onClick={() => handleOnClick(slot)}
+                                    />
+                                    <Toaster
+                                        position="bottom-center"
+                                        reverseOrder={false}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    )
-                })
-                : null
+                        )
+                    })
+                    : null
             }
         </div>
     )
-    
+
 }
 
 const SlotTime = ({ startTime, endTime }) => {
@@ -74,9 +74,9 @@ const ShiftHeader = ({ date }) => {
     let todayDate = moment()
     let tommorowDate = moment().add(1, 'days')
     let headerTitle
-    if(headerDate.format('L') === todayDate.format('L')) {
+    if (headerDate.format('L') === todayDate.format('L')) {
         headerTitle = "Today"
-    } else if(headerDate.format('L') === tommorowDate.format('L')) {
+    } else if (headerDate.format('L') === tommorowDate.format('L')) {
         headerTitle = "Tommorow"
     } else {
         headerTitle = moment(headerDate).format('MMMM Do')
@@ -89,11 +89,11 @@ const ShiftHeader = ({ date }) => {
     )
 }
 
-const Button = ({className, isDisabled, onClick, loadingId, slot}) => {
+const Button = ({ className, isDisabled, onClick, loadingId, slot }) => {
     return (
-        <button 
-            className={className} 
-            disabled={isDisabled} 
+        <button
+            className={className}
+            disabled={isDisabled}
             onClick={onClick}
         >
             <ButtonTitle slot={slot} loadingId={loadingId} />
@@ -101,7 +101,7 @@ const Button = ({className, isDisabled, onClick, loadingId, slot}) => {
     )
 }
 
-const findOverlappedShift = (data,shift) => {
+const findOverlappedShift = (data, shift) => {
     return !!data.filter(s => s.booked).find(s => s.startTime < shift.endTime && s.endTime > shift.startTime)
 }
 

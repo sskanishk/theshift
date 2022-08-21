@@ -44,14 +44,6 @@ export const groupByAreaAvailableShifts = (data) => {
 		return groups
 	}, {})
 
-	// const groupByArea = Object.keys(groups).map((area) => {
-	// 	return {
-	// 		area,
-	// 		count: groups[area].count,
-	// 		shifts: groupByDateFunc(groups[area].shifts)
-	// 	}
-	// })
-
 	const groupByArea = {}
 
 	Object.keys(groups).forEach((area) => {
