@@ -1,20 +1,19 @@
 function NavigationTabs({tabState, setTabState}) {
 
 	const handleNavigation = (e) => {
+		if(e.target.nodeName !== "H1") {
+			return
+		}
 		const newTabState = tabState.map((tab) => {
 			if(tab.id === e.target.id) {
 				tab.isActive = true
 				return tab
+			} else {
+				tab.isActive = false
+				return tab
 			}
-			tab.isActive = false
-			return tab
 		})
 		setTabState(newTabState)
-
-		if(e.target.id === "my-shift") {
-		}
-		if(e.target.id === "avaialble-shift") {
-		}
 	}
 
 
