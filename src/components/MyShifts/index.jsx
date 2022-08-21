@@ -6,8 +6,8 @@ import useStore from '../../store/shift'
 
 function MyShifts() {
 
-    const shiftStore = useStore()
-    const { myShifts, getMyShiftData } = shiftStore.shift
+    const shiftStore = useStore(state => state.shift)
+    const { myShifts, getMyShiftData } = shiftStore
 
     useEffect(() => {
         getMyShiftData()

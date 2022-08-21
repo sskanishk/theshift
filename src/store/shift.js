@@ -169,14 +169,29 @@ const useStore = create((set, get) => ({
 
             setTimeout(() => {
                 // get my-shift data
-                const myShiftData = get().shift.myShifts
+                const shiftData = get().shift.shiftData
 
-                let updatedshift = updateBookStatus(myShiftData, shiftToBeCancel, false)
+                // getMyShiftData
+                let updatedshift = shiftData.map((shift) => {
+                    if(shift.id === shiftToBeCancel.id) {
+                        shift.booked = false
+                    }
+                    return shift
+                })
 
-                // set available shift data
+                // update all shift data
                 set((state) => ({
-                    shift: {...state.shift, myShifts: updatedshift, loading:false, loadingId:""}
+                    shift: {
+                        ...state.shift, 
+                        loadingId:"",
+                        loading:false, 
+                        shiftData: updatedshift, 
+                    }
                 }))
+
+                // modify fresh data compatible with my-shift data
+                get().shift.getMyShiftData()
+
             }, 500)
         }
     }
