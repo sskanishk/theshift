@@ -1,38 +1,52 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
 import ShiftsGroup from "./shiftsGroup"
+import useStore from '../../store/shift'
 
 function AvailableShift({data}) {
 
+	const shiftStore = useStore()
+    const { availableShifts, getAvailableShiftsData } = shiftStore.shift
+
+	// const defaultArea = Object.keys(availableShifts)[0]
+
 	const [avaialbleShifts, setAvaialbleShifts] = useState(null)
-	const [activeArea, setActiveArea] = useState(null)
+	const [activeArea, setActiveArea] = useState()
 	const [shiftsToPass, setShiftsToPass] = useState(null)
 
 
-
     useEffect(() => {
-		const response = groupByShiftFunc(data.filter((shift) => moment().valueOf() < shift.endTime))
-		const defaultArea = Object.keys(response)[0]
-		setAvaialbleShifts(response)
+		// const response = groupByShiftFunc(data.filter((shift) => moment().valueOf() < shift.endTime))
+		let r = getAvailableShiftsData()
+		debugger
+		console.log(r)
+		console.log("availableShifts ", availableShifts)
+		const defaultArea = Object.keys(availableShifts)[0]
+		setAvaialbleShifts(availableShifts)
 		setActiveArea(defaultArea)
-		setShiftsToPass(response[defaultArea])
+		setShiftsToPass(availableShifts[defaultArea])
     }, [])
 
-    const bookshift = (shift) => {
-        let updatedshift = avaialbleShifts[shift.area].shifts.map((i) => {
-            if(i.date === moment(shift.startTime).format('L')) {
+
+    const shiftAction = (shift, type) => {
+		let bookStatus
+		if(type === "cancel") { bookStatus = false }
+		if(type === "book") { bookStatus = true }
+        
+		let updatedshift = avaialbleShifts[shift.area].shifts.map((foo) => {
+            if(foo.date === moment(shift.startTime).format('L')) {
                 return {
-                    shifts: i.shifts.map((s) => {
-                        if(s.id === shift.id) {
-                            s.booked = true
-                            return s
+                    shifts: foo.shifts.map((bar) => {
+                        if(bar.id === shift.id) {
+                            bar.booked = bookStatus
+                            return bar
                         }
-                        return s
+                        return bar
                     }),
-                    ...i
+                    ...foo
                 }
             }
-            return i
+            return foo
         })
         setAvaialbleShifts({
             ...avaialbleShifts, 
@@ -46,7 +60,7 @@ function AvailableShift({data}) {
 	return (
         <>
             <AreaFilter 
-				avaialbleShifts={avaialbleShifts} 
+				availableShifts={availableShifts} 
 				activeArea={activeArea} 
 				setActiveArea={setActiveArea} 
 				setShiftsToPass={setShiftsToPass}
@@ -55,7 +69,7 @@ function AvailableShift({data}) {
 				shiftsToPass?.shifts
 				? 
 					shiftsToPass.shifts.map((shift, i) => {
-						return <ShiftsGroup item={shift} bookshift={bookshift} key={`sg${i}`}/>
+						return <ShiftsGroup item={shift} shiftAction={shiftAction} key={`sg${i}`}/>
 					})
 				
 				: null

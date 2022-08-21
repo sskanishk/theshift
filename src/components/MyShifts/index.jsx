@@ -2,33 +2,41 @@ import moment from "moment"
 import { useEffect, useState } from "react"
 import NoResultFound from "../NoResultFound"
 import ShiftGroup from "./ShiftGroup"
+import useStore from '../../store/shift'
+
 
 function MyShifts({data}) {
 
-    const [myShifts, setMyShifts] = useState(null)
+    // const [myShifts, setMyShifts] = useState(null)
+
+    const shiftStore = useStore()
+    const { myShifts, getMyShiftData } = shiftStore.shift
+
 
     useEffect(() => {
-        const temp = groupByDateFunc(data.filter((dt) => dt.booked))
-		setMyShifts(temp)
+        // const temp = groupByDateFunc(data.filter((dt) => dt.booked))
+		// setMyShifts(temp)
+        getMyShiftData()
+
     },[])
 
 	const cancelshift = (shift) => {
-		let updatedMyShift = myShifts.map((i) => {
-            if(i.date === moment(shift.startTime).format('L')) {
+		let updatedMyShift = myShifts.map((foo) => {
+            if(foo.date === moment(shift.startTime).format('L')) {
                 return {
-                    shifts: i.shifts.map((s) => {
-                        if(s.id === shift.id) {
-                            s.booked = false
-                            return s
+                    shifts: foo.shifts.map((bar) => {
+                        if(bar.id === shift.id) {
+                            bar.booked = false
+                            return bar
                         }
-                        return s
+                        return bar
                     }),
-                    ...i
+                    ...foo
                 }
             }
-            return i
+            return foo
         })
-		setMyShifts(updatedMyShift)
+		// setMyShifts(updatedMyShift)
 	}
 
     return (

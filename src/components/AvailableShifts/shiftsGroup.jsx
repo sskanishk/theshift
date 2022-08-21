@@ -1,8 +1,6 @@
 import moment from "moment"
-import { useEffect } from "react"
-// import Button from "../Button"
 
-function ShiftsGroup({item, bookshift}) {
+function ShiftsGroup({item, shiftAction }) {
     return (
         <div className="shift__group">
             <ShiftHeader date={item.date} />
@@ -28,7 +26,7 @@ function ShiftsGroup({item, bookshift}) {
                                     title={slot.booked ? "Cancel" : "Book"}
                                     className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
                                     isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
-                                    onClick={() => bookshift(slot)}
+                                    onClick={() => shiftAction(slot, slot.booked ? "cancel" : "book")}
                                 />
                             </div>
                         </div>

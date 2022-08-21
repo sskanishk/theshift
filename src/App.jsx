@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import MyShifts from './components/MyShifts'
 import NavigationTabs from './components/NavigationTabs'
 import AvailableShift from './components/AvailableShifts'
-import ApiActions from "./actions/ApiActions"
+import useStore from './store/shift'
 // import datalocal from "../data.json"
 
 
@@ -23,17 +23,14 @@ function App() {
 		}		
 	]
 
-	const [data, setData] = useState(null)
 	const [ tabState, setTabState ] = useState(null)
 
+	const shiftStore = useStore()
+	const { shiftData, loading, error, fetchShifts, getAvailableShiftsData, getMyShiftData } = shiftStore.shift
 
 	useEffect(() => {
-		const fetchData = async () => {
-			const response = await ApiActions.getShifts()
-			setData(response.sort((a,b) => a.startTime - b.startTime))
-			setTabState(defaultTabState)
-		}
-		fetchData()
+		setTabState(defaultTabState)
+		fetchShifts()
 	}, [])
 
 	return (
@@ -45,7 +42,7 @@ function App() {
 					{
 						tabState && tabState.map((i) => {
 							if(i.isActive) {
-								return i.component(data)
+								return i.component(shiftData)
 							}
 						})
 					}
