@@ -1,11 +1,12 @@
 import moment from "moment"
 import useStore from '../../store/shift'
+import ButtonTitle from "../common/ButtonTitle"
 
 
 function ShiftsGroup({item}) {
 
     const shiftStore = useStore((state) => state.shift)
-    const { cancelShift } = shiftStore
+    const { cancelShift, loadingId } = shiftStore
 
 
     return (
@@ -22,9 +23,10 @@ function ShiftsGroup({item}) {
                                 <Area areaName={slot.area} />
                             </div>
                             <Button 
-                                title={slot.booked ? "Cancel" : "Book"} 
                                 className={`${slot.booked ? "cancel" : "book"} ${liveShift ? "disable" : ""}`}
-                                disabled={liveShift}
+                                disable={liveShift}
+                                slot={slot}
+                                loadingId={loadingId}
                                 onClick={() => cancelShift(slot)}
                             />
                         </div>
@@ -75,10 +77,16 @@ const ShiftHeader = ({ date, totalDuration, shiftCount }) => {
     )
 }
 
-const Button = ({title, className, disable, onClick}) => {
+const Button = ({className, disable, onClick, loadingId, slot}) => {
 
     return (
-        <button className={className} disabled={disable} onClick={onClick}>{title}</button>
+        <button 
+            className={className} 
+            disabled={disable} 
+            onClick={onClick}
+        >
+            <ButtonTitle slot={slot} loadingId={loadingId} />
+        </button>
     )
     
 }

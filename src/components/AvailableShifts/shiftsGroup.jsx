@@ -1,11 +1,11 @@
 import moment from "moment"
 import useStore from '../../store/shift'
-
+import ButtonTitle from "../common/ButtonTitle"
 
 function ShiftsGroup({item}) {
 
     const shiftStore = useStore((state) => state.shift)
-    const { updateShift } = shiftStore
+    const { updateShift, loadingId } = shiftStore
 
     return (
         <div className="shift__group">
@@ -29,7 +29,8 @@ function ShiftsGroup({item}) {
                                         : ""
                                     }
                                 <Button 
-                                    title={slot.booked ? "Cancel" : "Book"}
+                                    loadingId={loadingId}
+                                    slot={slot}
                                     className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
                                     isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
                                     onClick={() => updateShift(slot, slot.booked ? "cancel" : "book")}
@@ -73,14 +74,14 @@ const ShiftHeader = ({ date }) => {
     )
 }
 
-const Button = ({title, className, isDisabled, onClick}) => {
+const Button = ({className, isDisabled, onClick, loadingId, slot}) => {
     return (
         <button 
             className={className} 
             disabled={isDisabled} 
             onClick={onClick}
         >
-            {title}
+            <ButtonTitle slot={slot} loadingId={loadingId} />
         </button>
     )
 }

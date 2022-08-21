@@ -16,6 +16,7 @@ const initialState = {
     data: [],
     loading: false,
     error: "",
+    loadingId: ""
 }
 
 const useStore = create((set, get) => ({
@@ -124,42 +125,59 @@ const useStore = create((set, get) => ({
         },
 
         updateShift: (shiftToBeUpdate, type) => {
-            
-            // get availableShifts data
-            const availableShiftsData = get().shift.availableShifts
 
-            let bookStatus
-            if(type === "cancel") { bookStatus = false }
-            if(type === "book") { bookStatus = true }
-
-            let data = availableShiftsData[shiftToBeUpdate.area].shifts
-            let updatedshift = updateBookStatus(data, shiftToBeUpdate, bookStatus)
-
+            // start loading
             set((state) => ({
-                shift: {
-                    ...state.shift,
-                    availableShifts: {
-                        ...state.shift.availableShifts, 
-                        [shiftToBeUpdate.area]: { 
-                            shifts: updatedshift, 
-                            ...state.shift.availableShifts[shiftToBeUpdate.area]
-                        } 
-                    }
-                }
+                shift: {...state.shift, loading: true, loadingId: shiftToBeUpdate.id}
             }))
+
+            setTimeout(() => {
+                // get availableShifts data
+                const availableShiftsData = get().shift.availableShifts
+
+                let bookStatus
+                if(type === "cancel") { bookStatus = false }
+                if(type === "book") { bookStatus = true }
+
+                let data = availableShiftsData[shiftToBeUpdate.area].shifts
+                let updatedshift = updateBookStatus(data, shiftToBeUpdate, bookStatus)
+
+                set((state) => ({
+                    shift: {
+                        ...state.shift,
+                        loading: false,
+                        loadingId: "",
+                        availableShifts: {
+                            ...state.shift.availableShifts, 
+                            [shiftToBeUpdate.area]: { 
+                                shifts: updatedshift, 
+                                ...state.shift.availableShifts[shiftToBeUpdate.area]
+                            } 
+                        }
+                    }
+                }))
+            }, 500)
+            
+
         },
 
         cancelShift: (shiftToBeCancel) => {
-            // get my-shift data
-            const myShiftData = get().shift.myShifts
-
-            let updatedshift = updateBookStatus(myShiftData, shiftToBeCancel, false)
-
-            // set available shift data
+            // start loading
             set((state) => ({
-                shift: {...state.shift, myShifts: updatedshift}
+                shift: {...state.shift, loading: true, loadingId: shiftToBeCancel.id}
             }))
 
+            setTimeout(() => {
+                // get my-shift data
+                const myShiftData = get().shift.myShifts
+
+                let updatedshift = updateBookStatus(myShiftData, shiftToBeCancel, false)
+
+                // set available shift data
+                set((state) => ({
+                    shift: {...state.shift, myShifts: updatedshift, loading:false, loadingId:""}
+                }))
+            }, 500)
         }
     }
 }))
