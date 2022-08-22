@@ -26,7 +26,7 @@ function ShiftsGroup({ item }) {
             {
                 item && item.shifts ?
                     item.shifts.map((slot, i) => {
-                        let liveShift = slot.startTime > moment().valueOf() && moment().valueOf() > slot.endTime
+                        let liveShift = slot.startTime < moment().valueOf() && moment().valueOf() < slot.endTime
                         return (
                             <div key={`sh${i}`} className="shift__data shift__row">
                                 <div>

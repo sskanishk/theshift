@@ -2,11 +2,12 @@ import { useEffect } from "react"
 import NoResultFound from "../NoResultFound"
 import ShiftsGroup from "./shiftsGroup"
 import useStore from '../../store'
+import shallow from 'zustand/shallow'
 
 
 function MyShifts() {
 
-    const shiftStore = useStore(state => state.shift)
+    const shiftStore = useStore(state => state.shift, shallow)
     const { myShifts, fetchMyShiftData } = shiftStore
 
     useEffect(() => {

@@ -19,6 +19,12 @@ function ShiftsGroup({ item }) {
         }
     }
 
+    const disable = (slot) => {
+        if((!slot.booked && findOverlappedShift(item.shifts, slot)) || (moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot))) {
+            return "disable"
+        }
+    }
+
     return (
         <div className="shift__group">
             <ShiftHeader date={item.date} />
@@ -42,7 +48,7 @@ function ShiftsGroup({ item }) {
                                     <Button
                                         loadingId={loadingId}
                                         slot={slot}
-                                        className={`${slot.booked ? "cancel" : "book"} ${!slot.booked && findOverlappedShift(item.shifts, slot) ? "disable" : ""}`}
+                                        className={`${slot.booked ? "cancel" : "book"} ${disable(slot)}`}
                                         isDisabled={moment().valueOf() > slot.startTime || !slot.booked && findOverlappedShift(item.shifts, slot)}
                                         onClick={() => handleOnClick(slot)}
                                     />
