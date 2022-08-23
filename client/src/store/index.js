@@ -142,6 +142,18 @@ const useStore = create((set, get) => ({
                 resp = await ApiActions.bookShift(shiftToBeUpdate.id)
             }
 
+            // return response if there is error
+            if(resp?.statusCode === 400) {
+                set((state) => ({
+                    shift: {
+                        ...state.shift,
+                        loading: false,
+                        loadingId: ""
+                    }
+                }))
+                return resp
+            }
+
             // getting response
             let response = await ApiActions.getShifts()
 
@@ -184,6 +196,18 @@ const useStore = create((set, get) => ({
             }))
 
             let resp = await ApiActions.cancelShift(shiftToBeCancel.id)
+
+            // return response if there is error
+            if(resp?.statusCode === 400) {
+                set((state) => ({
+                    shift: {
+                        ...state.shift,
+                        loading: false,
+                        loadingId: ""
+                    }
+                }))
+                return resp
+            }
 
             // getting response
             let response = await ApiActions.getShifts()

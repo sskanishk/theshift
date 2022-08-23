@@ -23,13 +23,12 @@ function App() {
 		}
 	]
 
-	const [tabState, setTabState] = useState(null)
+	const [tabState, setTabState] = useState(defaultTabState)
 
 	const shiftStore = useStore()
 	const { shiftData, fetchShifts } = shiftStore.shift
 
 	useEffect(() => {
-		setTabState(defaultTabState)
 		fetchShifts()
 	}, [])
 

@@ -11,7 +11,7 @@ function ShiftsGroup({ item }) {
     const handleOnClick = async (slot) => {
         const resp = await updateShift(slot, slot.booked ? "cancel" : "book")
         if (resp.hasOwnProperty("error")) {
-            toast.error(`⁉️ ${resp.message}`)
+            toast.error(`${resp.message}`)
         } else if (resp.booked) {
             toast.success(`Shift has been booked`)
         } else {
